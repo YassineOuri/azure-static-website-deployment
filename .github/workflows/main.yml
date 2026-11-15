@@ -1,0 +1,5 @@
+name: CI with OpenID Connect
+
+on:
+  push:
+    branches: [master]
