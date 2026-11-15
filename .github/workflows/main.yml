@@ -38,10 +38,23 @@ jobs:
           template-file: ./main.bicep
       
       # Verify Outputs
-
       - name: Print Deployment Outputs
         run: |
           echo "websiteUrl: ${{ steps.deploy.outputs.websiteUrl }}"
           echo "storageAccountName : ${{ steps.deploy.outputs.storageAccountName }}"
+      
+      # Upload files to blob storage
+      - name: Upload to blob storage
+        uses: azure/CLI@v1
+        with:
+          inlineScript: |
+            az storage blob upload-batch --account-name ${{steps.deploy.outputs.storageAccountName}} --auth-mode key -d '$web' -s .
+
+      
+      # Azure Logout
+      - name: logout
+        run: |
+          az logout
+        if: always()
 
 
