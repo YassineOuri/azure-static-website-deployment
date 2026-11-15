@@ -34,4 +34,4 @@ jobs:
           scope: resourceGroup
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resource-group-name: static_web_storage_group
-          
+          template-file: ./main.bicep
