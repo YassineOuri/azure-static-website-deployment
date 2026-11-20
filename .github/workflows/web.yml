@@ -5,7 +5,7 @@ on:
     branches: [master]
     paths: 
         - 'apps/client/**'
-        - '.github\workflows\web.yml'
+        - '.github/workflows/web.yml'
 
 permissions:
   id-token: write
