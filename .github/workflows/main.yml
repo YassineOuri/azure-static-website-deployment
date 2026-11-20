@@ -67,8 +67,7 @@ jobs:
         id: rg_check
         with:
           inlineScript: |
-            exists = $(az group exists --name static_web_storage_group)
-            echo "Resource group static_web_storage_group already exists"
+            exists=$(az group exists --name static_web_storage_group)
             echo "exists=$exists" >> "$GITHUB_OUTPUT"
 
 
