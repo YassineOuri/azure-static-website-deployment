@@ -45,14 +45,13 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v7
 
-        
+
       - name: Cypress e2e test
         uses: cypress-io/github-action@v7
         with: 
-          working-directory: ./apps/azure-static-website-deployment
-          build: npm run build
-          start: npm start
-
+          start: npm run dev
+          wait-on: http://localhost:5173/
+          wait-on-timeout: 60
 
 
   deploy:
