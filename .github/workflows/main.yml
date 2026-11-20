@@ -8,6 +8,10 @@ permissions:
   id-token: write
   contents: read
 
+env:
+  RG_Name : static_web_storage_group
+  RG_LOCATION: francecentral
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -66,14 +70,14 @@ jobs:
       - name: Ensure Resource Group Exists
         id: rg_check
         run: |
-            exists=$(az group exists --name static_web_storage_group)
+            exists=$(az group exists --name ${{env.RG_Name}})
             echo "exists=$exists" >> "$GITHUB_OUTPUT"
 
 
       # Create Resource Group
       - name: Create Resource Group
         if: steps.rg_check.outputs.exists == 'false'
-        run:  az group create --name static_web_storage_group --location francecentral
+        run:  az group create --name ${{env.RG_Name}} --location ${{env.RG_LOCATION}}
       
      
       
@@ -86,7 +90,7 @@ jobs:
           operation: create
           scope: resourceGroup
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
-          resource-group-name: static_web_storage_group
+          resource-group-name: ${{env.RG_Name}}
           template-file: ./main.bicep
       
       # Verify Outputs
