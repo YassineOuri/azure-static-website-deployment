@@ -42,9 +42,14 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+        
       - name: Cypress e2e test
         uses: cypress-io/github-action@v7
         with: 
+          working-directory: ./apps/azure-static-website-deployment
           build: npm run build
           start: npm start
 
