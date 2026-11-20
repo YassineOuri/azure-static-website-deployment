@@ -3,6 +3,9 @@ name: CI with OpenID Connect
 on:
   push:
     branches: [master]
+    paths: 
+        - 'infra/**'
+        - '.github\workflows\infra.yml'
 
 permissions:
   id-token: write
