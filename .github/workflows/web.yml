@@ -18,7 +18,9 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    defaults:
+        run: 
+            working-directory: apps/web
     steps:
       - name: Checkout repository
         uses: actions/checkout@v7
@@ -26,6 +28,7 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v7
         with:
+        
           node-version: '20'
           cache: 'npm'
 
