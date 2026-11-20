@@ -63,21 +63,19 @@ jobs:
       
     
       # Check Resource Group exists
-      - uses: azure/CLI@v1
+      - name: Ensure Resource Group Exists
         id: rg_check
-        with:
-          inlineScript: |
+        run: |
             exists=$(az group exists --name static_web_storage_group)
             echo "exists=$exists" >> "$GITHUB_OUTPUT"
 
 
       # Create Resource Group
-      - uses: azure/CLI@v1
+      - name: Create Resource Group
         if: steps.rg_check.outputs.exists == 'false'
-        with: 
-          inlineScript: |
-            az group create --name static_web_storage_group --location francecentral
-
+        run:  az group create --name static_web_storage_group --location francecentral
+      
+     
       
       # Deploy Bicep File 
       - name: Biceps Deploy
@@ -99,16 +97,12 @@ jobs:
       
       # Upload files to blob storage
       - name: Upload to blob storage
-        uses: azure/CLI@v1
-        with:
-          inlineScript: |
-            az storage blob upload-batch --account-name ${{steps.deploy.outputs.storageAccountName}} --auth-mode key -d '$web' -s ./dist --overwrite true
+        run: az storage blob upload-batch --account-name ${{steps.deploy.outputs.storageAccountName}} --auth-mode key -d '$web' -s ./dist --overwrite true
 
       
       # Azure Logout
       - name: logout
-        run: |
-          az logout
+        run: az logout
         if: always()
 
 

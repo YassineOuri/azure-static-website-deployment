@@ -1,5 +1,5 @@
 <script setup>
-const name = 'Your Name'
+const name = 'Yassine Ouri'
 const role = 'Full-Stack Developer'
 const intro = 'I design and build reliable web applications, from database to interface.'
 const email = 'hello@example.com'
