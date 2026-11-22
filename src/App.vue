@@ -3,7 +3,16 @@ const name = 'Yassine Ouri'
 const role = 'Full-Stack Developer'
 const intro = 'I design and build reliable web applications, from database to interface.'
 const email = 'hello@example.com'
-const visits = 1248 // placeholder, replace with real data later
+const visits = 0 // placeholder, replace with real data later
+
+
+export default {
+  async mounted() {
+    const response = await fetch("https://portfolioapp-fzczghfjgmbmcva5.francecentral-01.azurewebsites.net/api/visits")
+    const json = response.json();
+    visits = json.count
+  }
+}
 
 const skillGroups = [
   { label: 'Frontend', items: ['Vue', 'JavaScript'] },
