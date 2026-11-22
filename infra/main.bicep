@@ -35,5 +35,14 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2025-08-01'
     }
 }
 
+
+module storageModule './functions.bicep' = {
+  name: 'functionsDeploy'
+  params: {
+    storageAccountName: storageAccount.name
+    location: resourceGroup().location
+  }
+}
+
 output storageAccountName string = storageAccount.name
 output websiteUrl string = storageAccount.properties.primaryEndpoints.web
