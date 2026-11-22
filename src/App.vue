@@ -41,6 +41,11 @@ const projects = [
             <a href="#projects" class="btn btn-primary">View projects</a>
             <a href="#contact" class="btn btn-ghost">Get in touch</a>
           </div>
+          <p class="visits">
+            <span class="visits-dot" aria-hidden="true"></span>
+            <span class="visits-label">Total visits</span>
+            <span class="visits-count">{{ visits.toLocaleString() }}</span>
+          </p>
         </div>
 
         <aside class="stack" aria-label="Technical skills">
@@ -97,13 +102,7 @@ const projects = [
   </main>
 
   <footer class="footer">
-    <div class="container footer-inner">
-      <span>© {{ new Date().getFullYear() }} {{ name }}</span>
-      <span class="visits">
-        <span class="visits-label">Visits</span>
-        <span class="visits-count">{{ visits.toLocaleString() }}</span>
-      </span>
-    </div>
+    <div class="container">© {{ new Date().getFullYear() }} {{ name }}</div>
   </footer>
 </template>
 
@@ -184,10 +183,15 @@ h1 {
 
 /* Footer */
 .footer { padding: 28px 0; border-top: 1px solid var(--line); font-size: 0.875rem; color: var(--muted); }
-.footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
 
 /* Visit counter */
-.visits { display: inline-flex; align-items: center; gap: 8px; }
+.visits {
+  display: inline-flex; align-items: center; gap: 10px;
+  margin-top: 28px; padding: 6px 8px 6px 14px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+  font-size: 0.875rem;
+}
+.visits-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
 .visits-label { color: var(--muted); }
 .visits-count {
   background: var(--accent-soft); color: var(--accent);
