@@ -5,15 +5,6 @@ const intro = 'I design and build reliable web applications, from database to in
 const email = 'hello@example.com'
 const visits = 0 // placeholder, replace with real data later
 
-
-export default {
-  async mounted() {
-    const response = await fetch("https://portfolioapp-fzczghfjgmbmcva5.francecentral-01.azurewebsites.net/api/visits")
-    const json = response.json();
-    visits = json.count
-  }
-}
-
 const skillGroups = [
   { label: 'Frontend', items: ['Vue', 'JavaScript'] },
   { label: 'Backend', items: ['PHP', 'Laravel', 'Python'] },
@@ -25,6 +16,21 @@ const projects = [
   { title: 'Project Two', description: 'Short description of the second project.', stack: ['Python', 'SQL'], link: '#' },
   { title: 'Project Three', description: 'Short description of the third project.', stack: ['JavaScript', 'PHP'], link: '#' },
 ]
+
+onMounted(async () => {
+  try {
+    const response = await fetch(
+      'https://portfolioapp-fzczghfjgmbmcva5.francecentral-01.azurewebsites.net/api/visits'
+    )
+    if (!response.ok) throw new Error(`HTTP ${response.status}`)
+    const json = await response.json()
+    visits.value = json.count
+  } catch (err) {
+    console.error('Failed to load visits:', err)
+  }
+})
+
+
 </script>
 
 <template>
