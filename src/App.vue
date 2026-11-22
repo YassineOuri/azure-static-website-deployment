@@ -1,9 +1,11 @@
 <script setup>
+import { ref, onMounted } from 'vue'
+
 const name = 'Yassine Ouri'
 const role = 'Full-Stack Developer'
 const intro = 'I design and build reliable web applications, from database to interface.'
 const email = 'hello@example.com'
-const visits = 0 // placeholder, replace with real data later
+const visits = ref(null)
 
 const skillGroups = [
   { label: 'Frontend', items: ['Vue', 'JavaScript'] },
@@ -29,8 +31,6 @@ onMounted(async () => {
     console.error('Failed to load visits:', err)
   }
 })
-
-
 </script>
 
 <template>
@@ -59,7 +59,7 @@ onMounted(async () => {
           <p class="visits">
             <span class="visits-dot" aria-hidden="true"></span>
             <span class="visits-label">Total visits</span>
-            <span class="visits-count">{{ visits.toLocaleString() }}</span>
+            <span class="visits-count">{{ visits === null ? '—' : visits.toLocaleString() }}</span>
           </p>
         </div>
 
