@@ -10,7 +10,7 @@ that connects to Azure Storage by using managed identities with Microsoft Entra 
 param location string = resourceGroup().location 
 
 param storageAccountName string
-param functionAppRuntimeVersion string = '24 LTS' 
+param functionAppRuntimeVersion string = '22' 
 
 
 @description('The maximum scale-out instance count limit for the app.')
@@ -127,6 +127,16 @@ resource roleAssignmentAppInsights 'Microsoft.Authorization/roleAssignments@2022
   }
 }
 
+resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2025-06-01' existing = {
+  parent: storage
+  name: 'default'
+}
+
+resource deploymentContainer 'Microsoft.Storage/storageAccounts/blobServices/containers@2025-06-01' = {
+  parent: blobService
+  name: deploymentStorageContainerName
+}
+
 //********************************************
 // Function app and Flex Consumption plan definitions
 //********************************************
@@ -142,6 +152,7 @@ resource appServicePlan 'Microsoft.Web/serverfarms@2024-04-01' = {
   properties: {
     reserved: true
   }
+ 
 }
 
 resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
@@ -154,6 +165,14 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
       '${userAssignedIdentity.id}':{}
       }
     }
+     dependsOn: [
+    deploymentContainer
+    roleAssignmentBlobDataOwner
+    roleAssignmentBlob
+    roleAssignmentQueueStorage
+    roleAssignmentTableStorage
+    roleAssignmentAppInsights
+  ]
   properties: {
     serverFarmId: appServicePlan.id
     httpsOnly: true
