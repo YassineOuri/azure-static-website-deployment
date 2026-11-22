@@ -3,6 +3,7 @@ const name = 'Yassine Ouri'
 const role = 'Full-Stack Developer'
 const intro = 'I design and build reliable web applications, from database to interface.'
 const email = 'hello@example.com'
+const visits = 1248 // placeholder, replace with real data later
 
 const skillGroups = [
   { label: 'Frontend', items: ['Vue', 'JavaScript'] },
@@ -96,7 +97,13 @@ const projects = [
   </main>
 
   <footer class="footer">
-    <div class="container">© {{ new Date().getFullYear() }} {{ name }}</div>
+    <div class="container footer-inner">
+      <span>© {{ new Date().getFullYear() }} {{ name }}</span>
+      <span class="visits">
+        <span class="visits-label">Visits</span>
+        <span class="visits-count">{{ visits.toLocaleString() }}</span>
+      </span>
+    </div>
   </footer>
 </template>
 
@@ -177,6 +184,16 @@ h1 {
 
 /* Footer */
 .footer { padding: 28px 0; border-top: 1px solid var(--line); font-size: 0.875rem; color: var(--muted); }
+.footer-inner { display: flex; justify-content: space-between; align-items: center; gap: 16px; flex-wrap: wrap; }
+
+/* Visit counter */
+.visits { display: inline-flex; align-items: center; gap: 8px; }
+.visits-label { color: var(--muted); }
+.visits-count {
+  background: var(--accent-soft); color: var(--accent);
+  padding: 2px 12px; border-radius: 999px;
+  font-weight: 500; font-variant-numeric: tabular-nums;
+}
 
 /* Responsive */
 @media (max-width: 800px) {
