@@ -36,7 +36,7 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2025-08-01'
 }
 
 
-module storageModule './functions.bicep' = {
+module functionAppModule './functions.bicep' = {
   name: 'functionsDeploy'
   params: {
     storageAccountName: storageAccount.name
@@ -46,3 +46,4 @@ module storageModule './functions.bicep' = {
 
 output storageAccountName string = storageAccount.name
 output websiteUrl string = storageAccount.properties.primaryEndpoints.web
+output functionAppEndpoint string = functionAppModule.outputs.functionAppEndpoint
