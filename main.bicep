@@ -36,4 +36,4 @@ resource blobService 'Microsoft.Storage/storageAccounts/blobServices@2025-08-01'
 }
 
 output storageAccountName string = storageAccount.name
-output websiteUrl string = storageAccount.properties.primaryEndpoints.blob
+output websiteUrl string = storageAccount.properties.primaryEndpoints.web
