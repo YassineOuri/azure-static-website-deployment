@@ -111,6 +111,15 @@ jobs:
           echo "websiteUrl: ${{ steps.deploy.outputs.websiteUrl }}"
           echo "storageAccountName : ${{ steps.deploy.outputs.storageAccountName }}"
           echo "functionAppEndpoint : ${{steps.deploy.outputs.functionAppEndpoint}}"
+          echo "functionAppName": ${{steps.deploy.outputs.functionAppName}}
+
+      
+      # Deploy Backend to function app
+      - name: Deploy Backend to Azure Functions
+        uses: Azure/functions-action@v1
+        with:
+          app-name: ${{steps.deploy.outputs.functionAppName}}
+          package: "./api"
       
       # Upload files to blob storage
       - name: Upload to blob storage

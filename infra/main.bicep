@@ -53,3 +53,4 @@ module functionAppModule './functions.bicep' = {
 output storageAccountName string = storageAccount.name
 output websiteUrl string = storageAccount.properties.primaryEndpoints.web
 output functionAppEndpoint string = functionAppModule.outputs.functionAppEndpoint
+output functionAppName string = functionAppModule.outputs.functionAppName

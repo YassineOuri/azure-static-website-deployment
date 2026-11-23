@@ -219,3 +219,4 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
 }
 
 output functionAppEndpoint string = 'https://${functionApp.properties.defaultHostName}' 
+output functionAppName string = functionApp.name
