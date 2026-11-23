@@ -10,7 +10,8 @@ that connects to Azure Storage by using managed identities with Microsoft Entra 
 param location string = resourceGroup().location 
 
 param storageAccountName string
-param functionAppRuntimeVersion string = '22' 
+param static_site_origin string = ''
+param functionAppRuntimeVersion string = '22'
 
 
 @description('The maximum scale-out instance count limit for the app.')
@@ -178,6 +179,11 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
     httpsOnly: true
     siteConfig: {
       minTlsVersion: '1.2'
+      cors: {
+        allowedOrigins: [
+          static_site_origin
+        ]
+      }
     }
     functionAppConfig: {
       deployment: {

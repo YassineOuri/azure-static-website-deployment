@@ -22,7 +22,7 @@ const projects = [
 onMounted(async () => {
   try {
     const response = await fetch(
-      'https://portfolioapp-fzczghfjgmbmcva5.francecentral-01.azurewebsites.net/api/visits'
+      ' https://func-mos6keloe4inq.azurewebsites.net/api/visits'
     )
     if (!response.ok) throw new Error(`HTTP ${response.status}`)
     const json = await response.json()
