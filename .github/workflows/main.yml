@@ -90,12 +90,7 @@ jobs:
       - name: Create Resource Group
         if: steps.rg_check.outputs.exists == 'false'
         run:  az group create --name ${{env.RG_Name}} --location ${{env.RG_LOCATION}}
-
-      # Grant Permissions
-      - name: Grant RBAC Admin Permissions
-        run: az role assignment create --assignee-object-id 1c482dbe-3f66-4059-9de6-f68823dfe3fa --assignee-principal-type ServicePrincipal --role "Role Based Access Control Administrator" --scope /subscriptions/${{secrets.AZURE_SUBSCRIPTION_ID}}/resourceGroups/${{env.RG_Name}}
-      
-     
+    
       
       # Deploy Bicep File 
       - name: Biceps Deploy
