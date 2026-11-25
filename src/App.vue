@@ -2,9 +2,9 @@
 import { ref, onMounted } from 'vue'
 
 const name = 'Yassine Ouri'
-const role = 'Full-Stack Developer'
+const role = 'Cloud Engineer'
 const intro = 'I design and build reliable web applications, from database to interface.'
-const email = 'hello@example.com'
+const email = 'yassine.ouri7319@gmail.com'
 const visits = ref(null)
 
 const skillGroups = [
