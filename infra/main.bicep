@@ -46,7 +46,7 @@ module functionAppModule './functions.bicep' = {
   params: {
     storageAccountName: storageAccount.name
     location: resourceGroup().location
-    static_site_origin: storageAccount.properties.primaryEndpoints.web
+    static_site_origin: endsWith(storageAccount.properties.primaryEndpoints.web, '/') ? take(storageAccount.properties.primaryEndpoints.web, length(storageAccount.properties.primaryEndpoints.web) - 1) : storageAccount.properties.primaryEndpoints.web
   }
 }
 
