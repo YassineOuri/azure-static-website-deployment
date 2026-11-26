@@ -26,3 +26,25 @@ app.http('visits', {
     return { status: 200, jsonBody: { count }};
   }
 });
+
+app.http('visits', {
+  methods : ['POST'],
+  authLevel: 'anonymous',
+  route: 'visits',
+  handler : () => {
+    const id = 'visitors'
+    const partitionKey = 'visitors'
+    const operations = [
+    {"op": "incr", "path": "/count", "value": 1}
+]
+
+    response = container.patch_item(
+        item=id,
+        partition_key=partitionKey,
+        patch_operations=operations
+    )
+
+    return { status: 201, body : "A new visior ? Welcome!"};
+
+  }
+})
