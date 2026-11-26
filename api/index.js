@@ -1,37 +1,28 @@
 const { app } = require('@azure/functions');
-const sql = require('mssql')
+const {DefaultAzureCredential} = require('@azure/identity')
+const {CosmosClient} = require('@azure/cosmos')
 
 
 
-let poolPromise;
-function getPool() {
-  if(!poolPromise) {
-    poolPromise = new sql.ConnectionPool(process.env.SQL_CONNECTION_STRING)
-      .connect()
-      .catch((err) => {
-        poolPromise = undefined;
-        throw err;
-      })
-  }
+const credential = new DefaultAzureCredential()
+const client = new CosmosClient({
+  endpoint: 'https://static-web-db-cosmos.documents.azure.com:443',
+  aadCredentials: credential
+})
 
-  return poolPromise;
-}
+const database = client.database('portfolio_db')
+const container = database.container('counters')
 
 app.http('visits', {
   methods: ['GET'],
   authLevel: 'anonymous',
   route: 'visits',
   handler: async () => {
-    try {
-      const pool = await getPool();
-      const result = await pool
-        .request()
-        .query('SELECT [count] FROM dbo.visits WHERE id = 1');
-      const count = result.recordset[0]?.count ?? 0;
-      return { status: 200, jsonBody: { count }};
-    } catch (err) {
-      context.error('Failed to read visits', err);
-      return { status: 500, jsonBody: { error: 'Could not read visit count' } };
-    }
+    const id = 'visitors'
+    const partitionKey = 'visitors'
+
+    let response = await container.item(id, partitionKey).read()
+    let count = response.resource.count;
+    return { status: 200, jsonBody: { count }};
   }
 });
