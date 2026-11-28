@@ -12,6 +12,8 @@ param location string = resourceGroup().location
 param storageAccountName string
 param static_site_origin string = ''
 param functionAppRuntimeVersion string = '22'
+param cosmosDBName string = ''
+param cosmosEndpoint string = ''
 
 
 @description('The maximum scale-out instance count limit for the app.')
@@ -42,10 +44,15 @@ var storageBlobDataContributorRoleId = 'ba92f5b4-2d11-453d-a403-e96b0029c9fe'
 var storageQueueDataContributorId = '974c5e8b-45b9-4653-ba55-5f855dd0fb88'
 var storageTableDataContributorId = '0a9a7e1f-b9d0-4cc4-a60d-0319b160aaa3'
 var monitoringMetricsPublisherId = '3913510d-42f4-4e42-8a64-420c390055eb'
+var cosmosDBDataContributorId = '00000000-0000-0000-0000-000000000002'
 
 
 resource storage 'Microsoft.Storage/storageAccounts@2025-06-01' existing = {
   name: storageAccountName
+}
+
+resource cosmosDB 'Microsoft.DocumentDB/databaseAccounts@2021-10-15' existing = {
+  name: cosmosDBName
 }
 
 resource logAnalytics 'Microsoft.OperationalInsights/workspaces@2023-09-01' = {
@@ -103,6 +110,16 @@ resource roleAssignmentQueueStorage 'Microsoft.Authorization/roleAssignments@202
   scope: storage
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', storageQueueDataContributorId)
+    principalId: userAssignedIdentity.properties.principalId
+    principalType: 'ServicePrincipal'
+  }
+}
+
+resource roleAssignmentCosmosDB 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(subscription().id, cosmosDB.id, userAssignedIdentity.id, 'Cosmos DB Built-in Data Contributor')
+  scope: cosmosDB
+  properties: {
+    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cosmosDBDataContributorId)
     principalId: userAssignedIdentity.properties.principalId
     principalType: 'ServicePrincipal'
   }
@@ -173,6 +190,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
     roleAssignmentQueueStorage
     roleAssignmentTableStorage
     roleAssignmentAppInsights
+    roleAssignmentCosmosDB
   ]
   properties: {
     serverFarmId: appServicePlan.id
@@ -216,6 +234,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
         APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsights.properties.InstrumentationKey
         APPLICATIONINSIGHTS_AUTHENTICATION_STRING: 'ClientId=${userAssignedIdentity.properties.clientId};Authorization=AAD'
         AZURE_CLIENT_ID: userAssignedIdentity.properties.clientId
+        COSMOS_DB_ENDPOINT : cosmosEndpoint
       }
   }
 }

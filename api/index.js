@@ -3,7 +3,7 @@ const { DefaultAzureCredential } = require('@azure/identity');
 const { CosmosClient } = require('@azure/cosmos');
 
 const client = new CosmosClient({
-  endpoint: 'https://cosmos-db-static-website.documents.azure.com:443',
+  endpoint: process.env.COSMOS_DB_ENDPOINT,
   aadCredentials: new DefaultAzureCredential({
     managedIdentityClientId : process.env.AZURE_CLIENT_ID
   }),
@@ -19,18 +19,35 @@ app.http('visits', {
   handler: async (request, context) => {
     try {
       if (request.method === 'POST') {
-        try {
-          const { resource } = await container
-            .item(ID, ID)
-            .patch([{ op: 'incr', path: '/count', value: 1 }]);
-          return { status: 200, jsonBody: { count: resource.count } };
-        } catch (err) {
-          if (err.code !== 404) throw err;
-          // First visit: create the item
+      try {
+        const { resource } = await container
+          .item(ID, ID)
+          .patch([
+            { op: 'incr', path: '/count', value: 1 }
+          ]);
+
+        return { status: 200, jsonBody: { count: resource.count } };
+
+      } catch (err) {
+        if (err.code === 404) {
+          // Item doesn't exist: initialize count to 1
           await container.items.create({ id: ID, count: 1 });
           return { status: 200, jsonBody: { count: 1 } };
         }
+
+        if (err.code === 400) {
+          const { resource } = await container
+            .item(ID, ID)
+            .patch([
+              { op: 'add', path: '/count', value: 1 }
+            ]);
+
+          return { status: 200, jsonBody: { count: resource.count } };
+        }
+
+        throw err;
       }
+}
 
       const { resource } = await container.item(ID, ID).read();
       return { status: 200, jsonBody: { count: resource?.count ?? 0 } };

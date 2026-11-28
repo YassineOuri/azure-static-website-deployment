@@ -40,10 +40,16 @@ module storageAccountModule './storage_account.bicep' = {
   name: 'storageDeploy'
 }
 
+module cosmosDbModule './database.bicep' = {
+  name : 'cosmosDeploy'
+}
+
 
 module functionAppModule './functions.bicep' = {
   name: 'functionsDeploy'
   params: {
+    cosmosDBName : cosmosDbModule.outputs.cosmosName
+    cosmosEndpoint : cosmosDbModule.outputs.cosmosEndpoint
     storageAccountName: storageAccount.name
     location: resourceGroup().location
     static_site_origin: endsWith(storageAccount.properties.primaryEndpoints.web, '/') ? take(storageAccount.properties.primaryEndpoints.web, length(storageAccount.properties.primaryEndpoints.web) - 1) : storageAccount.properties.primaryEndpoints.web
@@ -54,3 +60,4 @@ output storageAccountName string = storageAccount.name
 output websiteUrl string = storageAccount.properties.primaryEndpoints.web
 output functionAppEndpoint string = functionAppModule.outputs.functionAppEndpoint
 output functionAppName string = functionAppModule.outputs.functionAppName
+output cosmosEndpoint string = cosmosDbModule.outputs.cosmosEndpoint
