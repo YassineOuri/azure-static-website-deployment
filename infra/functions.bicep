@@ -182,6 +182,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
       cors: {
         allowedOrigins: [
           static_site_origin
+          'https://portal.azure.com'
         ]
       }
     }
@@ -214,6 +215,7 @@ resource functionApp 'Microsoft.Web/sites@2024-04-01' = {
         AzureWebJobsStorage__clientId: userAssignedIdentity.properties.clientId
         APPINSIGHTS_INSTRUMENTATIONKEY: applicationInsights.properties.InstrumentationKey
         APPLICATIONINSIGHTS_AUTHENTICATION_STRING: 'ClientId=${userAssignedIdentity.properties.clientId};Authorization=AAD'
+        AZURE_CLIENT_ID: userAssignedIdentity.properties.clientId
       }
   }
 }

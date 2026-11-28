@@ -1,50 +1,42 @@
 const { app } = require('@azure/functions');
-const {DefaultAzureCredential} = require('@azure/identity')
-const {CosmosClient} = require('@azure/cosmos')
+const { DefaultAzureCredential } = require('@azure/identity');
+const { CosmosClient } = require('@azure/cosmos');
 
-
-
-const credential = new DefaultAzureCredential()
 const client = new CosmosClient({
-  endpoint: 'https://static-web-db-cosmos.documents.azure.com:443',
-  aadCredentials: credential
-})
-
-const database = client.database('portfolio_db')
-const container = database.container('counters')
-
-app.http('visits', {
-  methods: ['GET'],
-  authLevel: 'anonymous',
-  route: 'visits',
-  handler: async () => {
-    const id = 'visitors'
-    const partitionKey = 'visitors'
-
-    let response = await container.item(id, partitionKey).read()
-    let count = response.resource.count;
-    return { status: 200, jsonBody: { count }};
-  }
+  endpoint: 'https://cosmos-db-static-website.documents.azure.com:443',
+  aadCredentials: new DefaultAzureCredential({
+    managedIdentityClientId : process.env.AZURE_CLIENT_ID
+  }),
 });
+const container = client.database('portfolio_db').container('counters');
+
+const ID = 'visitors';
 
 app.http('visits', {
-  methods : ['POST'],
+  methods: ['GET', 'POST'],
   authLevel: 'anonymous',
   route: 'visits',
-  handler : () => {
-    const id = 'visitors'
-    const partitionKey = 'visitors'
-    const operations = [
-    {"op": "incr", "path": "/count", "value": 1}
-]
+  handler: async (request, context) => {
+    try {
+      if (request.method === 'POST') {
+        try {
+          const { resource } = await container
+            .item(ID, ID)
+            .patch([{ op: 'incr', path: '/count', value: 1 }]);
+          return { status: 200, jsonBody: { count: resource.count } };
+        } catch (err) {
+          if (err.code !== 404) throw err;
+          // First visit: create the item
+          await container.items.create({ id: ID, count: 1 });
+          return { status: 200, jsonBody: { count: 1 } };
+        }
+      }
 
-    response = container.patch_item(
-        item=id,
-        partition_key=partitionKey,
-        patch_operations=operations
-    )
-
-    return { status: 201, body : "A new visior ? Welcome!"};
-
-  }
-})
+      const { resource } = await container.item(ID, ID).read();
+      return { status: 200, jsonBody: { count: resource?.count ?? 0 } };
+    } catch (err) {
+      context.error(err);
+      return { status: 500, jsonBody: { error: 'Something went wrong' } };
+    }
+  },
+});
