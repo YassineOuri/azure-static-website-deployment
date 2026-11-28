@@ -115,13 +115,13 @@ resource roleAssignmentQueueStorage 'Microsoft.Authorization/roleAssignments@202
   }
 }
 
-resource roleAssignmentCosmosDB 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+resource roleAssignmentCosmosDB 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAssignments@2024-05-15' = {
   name: guid(subscription().id, cosmosDB.id, userAssignedIdentity.id, 'Cosmos DB Built-in Data Contributor')
-  scope: cosmosDB
+  parent: cosmosDB
   properties: {
     roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cosmosDBDataContributorId)
     principalId: userAssignedIdentity.properties.principalId
-    principalType: 'ServicePrincipal'
+    scope: cosmosDB.id
   }
 }
 
