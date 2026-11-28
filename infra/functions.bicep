@@ -119,7 +119,7 @@ resource roleAssignmentCosmosDB 'Microsoft.DocumentDB/databaseAccounts/sqlRoleAs
   name: guid(subscription().id, cosmosDB.id, userAssignedIdentity.id, 'Cosmos DB Built-in Data Contributor')
   parent: cosmosDB
   properties: {
-    roleDefinitionId: subscriptionResourceId('Microsoft.Authorization/roleDefinitions', cosmosDBDataContributorId)
+    roleDefinitionId: '${cosmosDB.id}/sqlRoleDefinitions/${cosmosDBDataContributorId}'
     principalId: userAssignedIdentity.properties.principalId
     scope: cosmosDB.id
   }
